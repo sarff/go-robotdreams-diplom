@@ -6,6 +6,8 @@ import (
 
 	"github.com/sarff/go-robotdreams-diplom/internal/clients"
 	"github.com/sarff/go-robotdreams-diplom/internal/config"
+	"github.com/sarff/go-robotdreams-diplom/internal/handlers"
+	"github.com/sarff/go-robotdreams-diplom/internal/services"
 	log "github.com/sarff/iSlogger"
 )
 
@@ -25,16 +27,16 @@ func main() {
 
 	ctx := context.Background()
 
-	// Clients
-	cl, err := clients.NewClients(ctx, cfg)
+	// Clients (DB,)
+	clnts, err := clients.NewClients(ctx, cfg)
 	if err != nil {
 		log.Error("Failed to create clients: %v", err)
 		panic(err)
 	}
 
-	// Services TODO:
+	// Services (Auth, Chat, WS):
+	srvcs, err := services.NewServices(cfg, clnts)
 
-	// Middlewares TODO:
-
-	// Handlers TODO:
+	// Fiber, Handlers, Midleware:
+	handlers.InitFiber(srvcs)
 }

@@ -3,6 +3,7 @@ package models
 import "time"
 
 type User struct {
+	ID        string    `json:"id" bson:"id"`
 	Username  string    `bson:"username" json:"username" validate:"required,min=3,max=20"`
 	Email     string    `bson:"email" json:"email" validate:"required,email"`
 	Password  string    `bson:"password" json:"-"`
