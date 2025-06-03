@@ -5,11 +5,14 @@ import (
 	"time"
 
 	"github.com/gofiber/fiber/v3"
+	"github.com/gofiber/fiber/v3/middleware/adaptor"
 	"github.com/gofiber/fiber/v3/middleware/cors"
+	"github.com/gofiber/fiber/v3/middleware/static"
 	"github.com/sarff/go-robotdreams-diplom/internal/services"
+	httpSwagger "github.com/swaggo/http-swagger/v2"
 )
 
-func InitFiber(services *services.Services) {
+func InitFiber(services *services.Services) *fiber.App {
 	// Initialize handlers
 	authHandler := NewAuthHandler(services.Auth)
 	//chatHandler := NewChatHandler(services.Chat)
@@ -46,6 +49,15 @@ func InitFiber(services *services.Services) {
 		AllowHeaders: []string{"Origin, Content-Type, Accept, Authorization"},
 	}))
 
+	app.Get("/swagger/*", adaptor.HTTPHandler(httpSwagger.Handler(
+		httpSwagger.URL("/swagger/doc.json"), // URL для swagger.json
+	)))
+
+	app.Use("/docs", static.New("./static"))
+	app.Get("/swagger.yaml", func(c fiber.Ctx) error {
+		return c.SendFile("./swagger.yaml")
+	})
+
 	// Routes
 	api := app.Group("/api/v1")
 
@@ -73,4 +85,5 @@ func InitFiber(services *services.Services) {
 		})
 	})
 
+	return app
 }

@@ -5,7 +5,7 @@ COPY go.mod go.sum ./
 RUN --mount=type=cache,id=gomod,target=/go/pkg/mod \
     --mount=type=cache,id=gobuild,target=/root/.cache/go-build \
     go mod download
-RUN go build -o shatapp ./cmd/server
+RUN go build -o shatapp ./cmd/
 FROM debian:bookworm-slim
 
 WORKDIR /app
