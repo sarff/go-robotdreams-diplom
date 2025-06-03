@@ -1,3 +1,11 @@
+// @title Shat API
+// @version 0.001.001
+// @description Boom boom — and into production.
+
+// @securityDefinitions.apiKey UserTokenAuth
+// @in header
+// @name X-User-Token
+
 package main
 
 import (

@@ -1,16 +1,20 @@
 package models
 
-import "time"
+import (
+	"time"
+
+	"go.mongodb.org/mongo-driver/bson/primitive"
+)
 
 type User struct {
-	ID        string    `json:"id" bson:"id"`
-	Username  string    `bson:"username" json:"username" validate:"required,min=3,max=20"`
-	Email     string    `bson:"email" json:"email" validate:"required,email"`
-	Password  string    `bson:"password" json:"-"`
-	IsOnline  bool      `bson:"is_online" json:"is_online"`
-	LastSeen  time.Time `bson:"last_seen" json:"last_seen"`
-	CreatedAt time.Time `bson:"created_at" json:"created_at"`
-	UpdatedAt time.Time `bson:"updated_at" json:"updated_at"`
+	ID        primitive.ObjectID `bson:"_id,omitempty" json:"id"`
+	Username  string             `bson:"username" json:"username" validate:"required,min=3,max=20"`
+	Email     string             `bson:"email" json:"email" validate:"required,email"`
+	Password  string             `bson:"password" json:"-"`
+	IsOnline  bool               `bson:"is_online" json:"is_online"`
+	LastSeen  time.Time          `bson:"last_seen" json:"last_seen"`
+	CreatedAt time.Time          `bson:"created_at" json:"created_at"`
+	UpdatedAt time.Time          `bson:"updated_at" json:"updated_at"`
 }
 
 type LoginRequest struct {

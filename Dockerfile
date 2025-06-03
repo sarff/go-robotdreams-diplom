@@ -5,12 +5,12 @@ COPY go.mod go.sum ./
 RUN --mount=type=cache,id=gomod,target=/go/pkg/mod \
     --mount=type=cache,id=gobuild,target=/root/.cache/go-build \
     go mod download
-RUN go build -o chatapp ./cmd/server
+RUN go build -o shatapp ./cmd/server
 FROM debian:bookworm-slim
 
 WORKDIR /app
-COPY --from=builder /app/chatapp .
+COPY --from=builder /app/shatapp .
 
 EXPOSE 8081
 
-ENTRYPOINT ["./chatapp"]
+ENTRYPOINT ["./shatapp"]
