@@ -14,8 +14,8 @@ type Services struct {
 func NewServices(cfg *config.Config, clnts *clients.Clients) (*Services, error) {
 	return &Services{
 		Auth: NewAuthService(cfg, clnts),
-		Chat: nil,
-		WS:   nil,
+		Chat: NewChatService(cfg, clnts),
+		WS:   NewWSService(cfg, clnts),
 	}, nil
 
 }

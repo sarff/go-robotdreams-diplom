@@ -2,10 +2,8 @@ package config
 
 import (
 	"errors"
-	"log/slog"
 
 	"github.com/caarlos0/env/v11"
-	"github.com/joho/godotenv"
 )
 
 type Config struct {
@@ -18,8 +16,8 @@ type Config struct {
 	}
 
 	Database struct {
-		URI  string `env:"MONGODB_URI" envDefault:"mongodb://localhost:27017"`
-		Name string `env:"MONGODB_NAME" envDefault:"test"`
+		URI  string `env:"MONGO_URI" envDefault:"mongodb://localhost:27017"`
+		Name string `env:"DATABASE_NAME" envDefault:"test"`
 	}
 
 	JWT struct {
@@ -28,12 +26,7 @@ type Config struct {
 }
 
 func GetConfig() (*Config, error) {
-	envFile := ".env"
 	cfg := &Config{}
-
-	if err := godotenv.Load(envFile); err != nil {
-		slog.Warn("Failed to load .env file, using environment variables only", "error", err)
-	}
 
 	if err := env.Parse(cfg); err != nil {
 		return nil, errors.New("failed to parse config from environment variables")

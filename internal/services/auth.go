@@ -22,6 +22,7 @@ func NewAuthService(cfg *config.Config, clnts *clients.Clients) *AuthService {
 	return &AuthService{
 		cfg:   cfg,
 		clnts: clnts,
+		repo:  repo.NewUserRepository(clnts.Mongo.DB),
 	}
 }
 
