@@ -16,10 +16,12 @@ services:
     volumes:
       - ./.env:/app/.env
       - ./logs:/app/logs
+      - ./static:/app/static
+      - ./docs:/app/docs
 
-  mongo:
+  mongodb:
     image: mongo:8
-    container_name: mongo
+    container_name: mongodb
     restart: unless-stopped
     ports:
       - "27017:27017"

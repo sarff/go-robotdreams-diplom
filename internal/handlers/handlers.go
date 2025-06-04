@@ -49,14 +49,14 @@ func InitFiber(services *services.Services) *fiber.App {
 		AllowHeaders: []string{"Origin, Content-Type, Accept, Authorization"},
 	}))
 
+	app.Use("/docs", static.New("./static"))
+	app.Get("/openapi.yaml", func(c fiber.Ctx) error {
+		return c.SendFile("./openapi.yaml")
+	})
+
 	app.Get("/swagger/*", adaptor.HTTPHandler(httpSwagger.Handler(
 		httpSwagger.URL("/swagger/doc.json"), // URL для swagger.json
 	)))
-
-	app.Use("/docs", static.New("./static"))
-	app.Get("/swagger.yaml", func(c fiber.Ctx) error {
-		return c.SendFile("./swagger.yaml")
-	})
 
 	// Routes
 	api := app.Group("/api/v1")

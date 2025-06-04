@@ -18,6 +18,7 @@ import (
 	"os/signal"
 	"syscall"
 
+	"github.com/joho/godotenv"
 	"github.com/sarff/go-robotdreams-diplom/internal/clients"
 	"github.com/sarff/go-robotdreams-diplom/internal/config"
 	"github.com/sarff/go-robotdreams-diplom/internal/handlers"
@@ -28,6 +29,10 @@ import (
 )
 
 func main() {
+	if err := godotenv.Load(); err != nil {
+		log.Info("No .env file found, using environment variables")
+	}
+
 	cfg, err := config.GetConfig()
 	if err != nil {
 		panic(err)
