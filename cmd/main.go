@@ -59,7 +59,7 @@ func main() {
 	srvcs, err := services.NewServices(cfg, clnts)
 
 	// Fiber, Handlers, Midleware:
-	app := handlers.InitFiber(srvcs)
+	app := handlers.InitFiber(srvcs, cfg)
 
 	go func() {
 		err := app.Listen(":8081")

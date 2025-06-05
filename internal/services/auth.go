@@ -81,5 +81,15 @@ func (as *AuthService) Login(req *models.LoginRequest) (*models.User, string, er
 }
 
 func (as *AuthService) Logout() error {
+	// TODO: need implement
 	return nil
+}
+
+func (as *AuthService) LogoutAll() error {
+	// TODO: need implement
+	return nil
+}
+
+func (as *AuthService) FindByID(userID string) (*models.User, error) {
+	return as.repo.FindByID(userID)
 }
