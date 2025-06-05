@@ -2,8 +2,8 @@
 // @version 0.001.001
 // @description Boom boom — and into production.
 
-// @host localhost:8081
-// @BasePath /api/v1
+// @host 127.0.0.1
+// @BasePath /
 
 // @securityDefinitions.apiKey UserTokenAuth
 // @in header

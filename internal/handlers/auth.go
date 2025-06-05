@@ -14,7 +14,6 @@ func NewAuthHandler(authService *services.AuthService) *AuthHandler {
 	return &AuthHandler{authService: authService}
 }
 
-// Register godoc
 // @Summary      Реєстрація нового користувача
 // @Description  Створення облікового запису користувача
 // @Tags         auth
@@ -23,7 +22,7 @@ func NewAuthHandler(authService *services.AuthService) *AuthHandler {
 // @Param        request  body      models.RegisterRequest  true  "Дані для реєстрації"
 // @Success      200      {object}  map[string]string        "Статус успішної реєстрації"
 // @Failure      400      {object}  map[string]string        "Невірні дані"
-// @Router       /auth/register [post]
+// @Router       /api/v1/auth/register [post]
 func (h *AuthHandler) Register(c fiber.Ctx) error {
 	var req models.RegisterRequest
 	if err := c.Bind().JSON(&req); err != nil {
@@ -53,7 +52,7 @@ func (h *AuthHandler) Register(c fiber.Ctx) error {
 // @Param        request  body      models.LoginRequest  true  "Дані для входу"
 // @Success      200      {object}  map[string]interface{} "Користувач та токен"
 // @Failure      401      {object}  map[string]string       "Невірний логін або пароль"
-// @Router       /auth/login [post]
+// @Router       /api/v1/auth/login [post]
 func (h *AuthHandler) Login(c fiber.Ctx) error {
 	var req models.LoginRequest
 	if err := c.Bind().JSON(&req); err != nil {
