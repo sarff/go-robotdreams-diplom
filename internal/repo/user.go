@@ -64,3 +64,22 @@ func (r *UserRepository) FindByID(id string) (*models.User, error) {
 
 	return &user, nil
 }
+
+func (r *UserRepository) UpdateOnlineStatus(userID string, isOnline bool) error {
+	objID, err := primitive.ObjectIDFromHex(userID)
+	if err != nil {
+		return err
+	}
+
+	upd := bson.M{
+		"$set": bson.M{
+			"is_online":  isOnline,
+			"updated_at": time.Now(),
+			"last_seen":  time.Now(),
+		},
+	}
+
+	_, err = r.collection.UpdateOne(context.Background(), bson.M{"_id": objID}, upd)
+
+	return err
+}

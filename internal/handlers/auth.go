@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v3"
 	"github.com/sarff/go-robotdreams-diplom/internal/models"
 	"github.com/sarff/go-robotdreams-diplom/internal/services"
@@ -9,6 +10,8 @@ import (
 type AuthHandler struct {
 	authService *services.AuthService
 }
+
+var validate = validator.New()
 
 func NewAuthHandler(authService *services.AuthService) *AuthHandler {
 	return &AuthHandler{authService: authService}
@@ -28,6 +31,13 @@ func (h *AuthHandler) Register(c fiber.Ctx) error {
 	if err := c.Bind().JSON(&req); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"error": "Invalid request body",
+		})
+	}
+
+	// Validate check
+	if err := validate.Struct(req); err != nil {
+		return c.Status(fiber.StatusUnprocessableEntity).JSON(fiber.Map{
+			"error": err.Error(),
 		})
 	}
 
@@ -58,6 +68,12 @@ func (h *AuthHandler) Login(c fiber.Ctx) error {
 	if err := c.Bind().JSON(&req); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"error": "Invalid request body",
+		})
+	}
+
+	if err := validate.Struct(req); err != nil {
+		return c.Status(fiber.StatusUnprocessableEntity).JSON(fiber.Map{
+			"error": err.Error(),
 		})
 	}
 

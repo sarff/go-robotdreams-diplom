@@ -9,6 +9,7 @@ import (
 	"github.com/sarff/go-robotdreams-diplom/internal/models"
 	"github.com/sarff/go-robotdreams-diplom/internal/repo"
 	"github.com/sarff/go-robotdreams-diplom/internal/utils"
+	log "github.com/sarff/iSlogger"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -38,7 +39,6 @@ func (as *AuthService) Register(req *models.RegisterRequest) error {
 		return err
 	}
 
-	// Create user
 	user := &models.User{
 		Username: req.Username,
 		Email:    req.Email,
@@ -65,8 +65,11 @@ func (as *AuthService) Login(req *models.LoginRequest) (*models.User, string, er
 		return nil, "", errors.New("invalid credentials")
 	}
 
-	// Update online status TODO:
-	//as.repo.UpdateOnlineStatus(user.ID.Hex(), true)
+	// Update online status
+	err = as.repo.UpdateOnlineStatus(user.ID.Hex(), true)
+	if err != nil {
+		log.Error("failed to update online status", "error", err)
+	}
 
 	// Generate JWT token
 	token, err := utils.GenerateToken(user.ID.Hex(), as.cfg.JWT.Secret)
