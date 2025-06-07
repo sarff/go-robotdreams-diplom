@@ -49,6 +49,7 @@ func (ch *ChatHandler) GetRooms(c fiber.Ctx) error {
 	// TODO: need implement
 	return nil
 }
+
 func (ch *ChatHandler) CreateRoom(c fiber.Ctx) error {
 	// TODO: need implement
 	return nil

@@ -30,7 +30,7 @@ func (r *UserRepository) Create(user *models.User) error {
 		return err
 	}
 
-	//user.ID = result.InsertedID.(primitive.ObjectID)
+	// user.ID = result.InsertedID.(primitive.ObjectID)
 	return nil
 }
 

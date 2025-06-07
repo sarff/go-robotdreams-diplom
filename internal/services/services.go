@@ -18,5 +18,4 @@ func NewServices(cfg *config.Config, clnts *clients.Clients, repos *repo.Repos) 
 		Chat: NewChatService(cfg, clnts, repos),
 		WS:   NewWSService(cfg, clnts),
 	}, nil
-
 }
