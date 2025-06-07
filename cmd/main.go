@@ -21,7 +21,7 @@ import (
 	"github.com/joho/godotenv"
 	"github.com/sarff/go-robotdreams-diplom/internal/clients"
 	"github.com/sarff/go-robotdreams-diplom/internal/config"
-	"github.com/sarff/go-robotdreams-diplom/internal/handlers"
+	"github.com/sarff/go-robotdreams-diplom/internal/server"
 	"github.com/sarff/go-robotdreams-diplom/internal/services"
 	log "github.com/sarff/iSlogger"
 
@@ -58,15 +58,21 @@ func main() {
 	// Services (Auth, Chat, WS):
 	srvcs, err := services.NewServices(cfg, clnts)
 
-	// Fiber, Handlers, Midleware:
-	app := handlers.InitFiber(srvcs, cfg)
-
+	httpServer := server.NewServer(cfg, srvcs)
 	go func() {
-		err := app.Listen(":8081")
-		if err != nil {
-			log.Error("server listening failed: %v", err)
+		if err := httpServer.Start(); err != nil {
+			log.Error("Server failed to start: %v", err)
 		}
 	}()
+	// Fiber, Handlers, Midleware:
+	//app := handlers.InitFiber(srvcs, cfg)
+	//
+	//go func() {
+	//	err := app.Listen(":8081")
+	//	if err != nil {
+	//		log.Error("server listening failed: %v", err)
+	//	}
+	//}()
 
 	log.Info("server started")
 
@@ -75,8 +81,8 @@ func main() {
 
 	<-sigChan
 
-	err = app.Shutdown()
-	if err != nil {
-		log.Error("server shutdown failed: %v", err)
+	log.Info("Shutting down server...")
+	if err := httpServer.Shutdown(); err != nil {
+		log.Error("Server shutdown failed: %v", err)
 	}
 }
