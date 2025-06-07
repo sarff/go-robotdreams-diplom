@@ -100,7 +100,12 @@ func (h *AuthHandler) Login(c fiber.Ctx) error {
 // @Failure      404  {object}  map[string]string        "Користувача не знайдено"
 // @Router       /api/v1/auth/profile [get]
 func (h *AuthHandler) GetProfile(c fiber.Ctx) error {
-	userID := c.Locals("userID").(string)
+	userID, ok := c.Locals("userID").(string)
+	if !ok {
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+			"error": "unauthorized",
+		})
+	}
 
 	user, err := h.authService.FindByID(userID)
 	if err != nil {

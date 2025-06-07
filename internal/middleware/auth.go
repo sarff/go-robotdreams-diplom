@@ -30,8 +30,16 @@ func AuthRequired(secret string) fiber.Handler {
 				"error": "invalid token",
 			})
 		}
-		log.Debug("claims: %v", claims)
-		c.Locals("userID", claims)
+		log.Debug("claims: %+v", claims)
+
+		sub, ok := claims["sub"].(string)
+		if !ok {
+			return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+				"error": "invalid token payload",
+			})
+		}
+		log.Debug("claims: %+v", sub)
+		c.Locals("userID", sub)
 		return c.Next()
 	}
 }

@@ -23,10 +23,14 @@ services:
     image: mongo:8
     container_name: mongodb
     restart: unless-stopped
+    networks:
+      - mynet
     ports:
       - "27017:27017"
     volumes:
       - mongo_data:/data/db
-
+networks:
+  mynet:
+    driver: bridge
 volumes:
   mongo_data:
