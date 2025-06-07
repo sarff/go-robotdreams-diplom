@@ -47,7 +47,7 @@ func InitFiber(services *services.Services, cfg *config.Config) *fiber.App {
 			fiber.MethodDelete,
 			fiber.MethodOptions,
 		},
-		AllowHeaders: []string{"Origin, Content-Type, Accept, Authorization"},
+		AllowHeaders: []string{"Origin, Content-Type, Accept, Authorization, X-User-Token"},
 	}))
 
 	app.Get("/docs", func(c fiber.Ctx) error {
