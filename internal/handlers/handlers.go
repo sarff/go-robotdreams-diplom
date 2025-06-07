@@ -7,11 +7,13 @@ import (
 	"github.com/gofiber/fiber/v3"
 	"github.com/gofiber/fiber/v3/middleware/adaptor"
 	"github.com/gofiber/fiber/v3/middleware/cors"
+	"github.com/sarff/go-robotdreams-diplom/internal/config"
+	"github.com/sarff/go-robotdreams-diplom/internal/middleware"
 	"github.com/sarff/go-robotdreams-diplom/internal/services"
 	httpSwagger "github.com/swaggo/http-swagger/v2"
 )
 
-func InitFiber(services *services.Services) *fiber.App {
+func InitFiber(services *services.Services, cfg *config.Config) *fiber.App {
 	// Initialize handlers
 	authHandler := NewAuthHandler(services.Auth)
 	//chatHandler := NewChatHandler(services.Chat)
@@ -45,16 +47,12 @@ func InitFiber(services *services.Services) *fiber.App {
 			fiber.MethodDelete,
 			fiber.MethodOptions,
 		},
-		AllowHeaders: []string{"Origin, Content-Type, Accept, Authorization"},
+		AllowHeaders: []string{"Origin, Content-Type, Accept, Authorization, X-User-Token"},
 	}))
 
 	app.Get("/docs", func(c fiber.Ctx) error {
 		return c.SendFile("./static/index.html")
 	})
-
-	//app.Get("/docs/swagger.json", func(c fiber.Ctx) error {
-	//	return c.Redirect("/swagger/doc.json", fiber.StatusMovedPermanently)
-	//})
 
 	app.Get("/swagger/*", adaptor.HTTPHandler(httpSwagger.Handler(
 		httpSwagger.URL("/swagger/doc.json"), // URL для swagger.json
@@ -67,7 +65,7 @@ func InitFiber(services *services.Services) *fiber.App {
 	auth := api.Group("/auth")
 	auth.Post("/register", authHandler.Register)
 	auth.Post("/login", authHandler.Login)
-	//auth.Get("/profile", middleware.AuthRequired(cfg.JWTSecret), authHandler.GetProfile)
+	auth.Get("/profile", middleware.AuthRequired(cfg.JWT.Secret), authHandler.GetProfile)
 
 	// Chat routes
 	//chat := api.Group("/chat", middleware.AuthRequired(cfg.JWTSecret))

@@ -35,7 +35,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/github_com_sarff_go-robotdreams-diplom_internal_models.LoginRequest"
+                            "$ref": "#/definitions/models.LoginRequest"
                         }
                     }
                 ],
@@ -49,6 +49,52 @@ const docTemplate = `{
                     },
                     "401": {
                         "description": "Невірний логін або пароль",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/auth/profile": {
+            "get": {
+                "security": [
+                    {
+                        "UserTokenAuth": []
+                    }
+                ],
+                "description": "Отримати інформацію про поточного автентифікованого користувача",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "auth"
+                ],
+                "summary": "Отримати профіль користувача",
+                "responses": {
+                    "200": {
+                        "description": "Профіль користувача",
+                        "schema": {
+                            "$ref": "#/definitions/models.User"
+                        }
+                    },
+                    "401": {
+                        "description": "Неавторизований доступ",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Користувача не знайдено",
                         "schema": {
                             "type": "object",
                             "additionalProperties": {
@@ -79,7 +125,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/github_com_sarff_go-robotdreams-diplom_internal_models.RegisterRequest"
+                            "$ref": "#/definitions/models.RegisterRequest"
                         }
                     }
                 ],
@@ -107,7 +153,7 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "github_com_sarff_go-robotdreams-diplom_internal_models.LoginRequest": {
+        "models.LoginRequest": {
             "type": "object",
             "required": [
                 "email",
@@ -122,7 +168,7 @@ const docTemplate = `{
                 }
             }
         },
-        "github_com_sarff_go-robotdreams-diplom_internal_models.RegisterRequest": {
+        "models.RegisterRequest": {
             "type": "object",
             "required": [
                 "email",
@@ -136,6 +182,38 @@ const docTemplate = `{
                 "password": {
                     "type": "string",
                     "minLength": 6
+                },
+                "username": {
+                    "type": "string",
+                    "maxLength": 20,
+                    "minLength": 3
+                }
+            }
+        },
+        "models.User": {
+            "type": "object",
+            "required": [
+                "email",
+                "username"
+            ],
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "is_online": {
+                    "type": "boolean"
+                },
+                "last_seen": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
                 },
                 "username": {
                     "type": "string",

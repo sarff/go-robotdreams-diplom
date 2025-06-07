@@ -53,7 +53,6 @@ func (h *AuthHandler) Register(c fiber.Ctx) error {
 	})
 }
 
-// Login godoc
 // @Summary      Вхід користувача
 // @Description  Аутентифікація користувача та отримання токена
 // @Tags         auth
@@ -90,15 +89,30 @@ func (h *AuthHandler) Login(c fiber.Ctx) error {
 	})
 }
 
-//func (h *AuthHandler) GetProfile(c fiber.Ctx) error {
-//	userID := c.Locals("userID").(string)
-//
-//	user, err := h.authService.GetUserByID(userID)
-//	if err != nil {
-//		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
-//			"error": "User not found",
-//		})
-//	}
-//
-//	return c.JSON(user)
-//}
+// @Summary      Отримати профіль користувача
+// @Description  Отримати інформацію про поточного автентифікованого користувача
+// @Tags         auth
+// @Accept       json
+// @Produce      json
+// @Security     UserTokenAuth
+// @Success      200  {object}  models.User              "Профіль користувача"
+// @Failure      401  {object}  map[string]string        "Неавторизований доступ"
+// @Failure      404  {object}  map[string]string        "Користувача не знайдено"
+// @Router       /api/v1/auth/profile [get]
+func (h *AuthHandler) GetProfile(c fiber.Ctx) error {
+	userID, ok := c.Locals("userID").(string)
+	if !ok {
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+			"error": "unauthorized",
+		})
+	}
+
+	user, err := h.authService.FindByID(userID)
+	if err != nil {
+		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
+			"error": "User not found",
+		})
+	}
+
+	return c.JSON(user)
+}
