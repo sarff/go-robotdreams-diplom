@@ -7,22 +7,14 @@ import (
 )
 
 func AuthRequired(secret string) fiber.Handler {
-	// TODO: need implement Get UserID from Token
 	return func(c fiber.Ctx) error {
 		auth := c.Get("X-User-Token")
-		log.Debug("auth: %v", auth)
+		log.Debug("auth: %s", auth)
 		if auth == "" {
 			return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
 				"error": "missing auth header",
 			})
 		}
-		//authParts := strings.Split(auth, " ")
-		//log.Debug("authParts: %v", authParts)
-		//if len(authParts) != 2 {
-		//	return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
-		//		"error": "invalid auth header",
-		//	})
-		//}
 
 		claims, err := utils.ValidateToken(auth, secret)
 		if err != nil {
@@ -30,15 +22,15 @@ func AuthRequired(secret string) fiber.Handler {
 				"error": "invalid token",
 			})
 		}
-		log.Debug("claims: %+v", claims)
+		log.Debug("claims: %+s", claims)
 
-		sub, ok := claims["sub"].(string)
+		sub, ok := claims["user_id"].(string)
 		if !ok {
 			return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
 				"error": "invalid token payload",
 			})
 		}
-		log.Debug("claims: %+v", sub)
+		log.Debug("claims: %+s", sub)
 		c.Locals("userID", sub)
 		return c.Next()
 	}
