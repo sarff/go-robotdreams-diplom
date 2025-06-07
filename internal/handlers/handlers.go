@@ -65,7 +65,7 @@ func InitFiber(services *services.Services, cfg *config.Config) *fiber.App {
 	auth := api.Group("/auth")
 	auth.Post("/register", authHandler.Register)
 	auth.Post("/login", authHandler.Login)
-	auth.Get("/profile", middleware.AuthRequired(cfg.JWT.Secret), authHandler.GetProfile)
+	auth.Get("/profile", authHandler.GetProfile, middleware.AuthRequired(cfg.JWT.Secret))
 
 	// Chat routes
 	//chat := api.Group("/chat", middleware.AuthRequired(cfg.JWTSecret))

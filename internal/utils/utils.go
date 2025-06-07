@@ -14,13 +14,11 @@ type Claims struct {
 }
 
 func GenerateToken(userID string, secret string) (string, error) {
-	claims := &Claims{
-		UserID: userID,
-		RegisteredClaims: jwt.RegisteredClaims{
-			ExpiresAt: jwt.NewNumericDate(time.Now().Add(24 * 7 * time.Hour)), // 7 days
-			IssuedAt:  jwt.NewNumericDate(time.Now()),
-			NotBefore: jwt.NewNumericDate(time.Now()),
-		},
+	claims := jwt.MapClaims{
+		"user_id": userID,
+		"exp":     jwt.NewNumericDate(time.Now().Add(24 * 7 * time.Hour)), // 7 days
+		"iat":     jwt.NewNumericDate(time.Now()),
+		"nbf":     jwt.NewNumericDate(time.Now()),
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
