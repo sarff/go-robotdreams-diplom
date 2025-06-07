@@ -11,14 +11,14 @@ import (
 type ChatService struct {
 	cfg   *config.Config
 	clnts *clients.Clients
-	repo  *repo.ChatRepository
+	repo  *repo.Repos
 }
 
-func NewChatService(cfg *config.Config, clnts *clients.Clients) *ChatService {
+func NewChatService(cfg *config.Config, clnts *clients.Clients, repos *repo.Repos) *ChatService {
 	return &ChatService{
 		cfg:   cfg,
 		clnts: clnts,
-		repo:  repo.NewChatRepository(clnts.Mongo.DB),
+		repo:  repos,
 	}
 }
 
@@ -39,7 +39,7 @@ func (s *ChatService) SendMessage(userID string, req *models.MessageRequest) (*m
 		Content: req.Content,
 	}
 
-	if err = s.repo.Create(message); err != nil {
+	if err = s.repo.ChatRepository.Create(message); err != nil {
 		return nil, err
 	}
 

@@ -3,6 +3,7 @@ package services
 import (
 	"github.com/sarff/go-robotdreams-diplom/internal/clients"
 	"github.com/sarff/go-robotdreams-diplom/internal/config"
+	"github.com/sarff/go-robotdreams-diplom/internal/repo"
 )
 
 type Services struct {
@@ -11,10 +12,10 @@ type Services struct {
 	WS   *WSService
 }
 
-func NewServices(cfg *config.Config, clnts *clients.Clients) (*Services, error) {
+func NewServices(cfg *config.Config, clnts *clients.Clients, repos *repo.Repos) (*Services, error) {
 	return &Services{
-		Auth: NewAuthService(cfg, clnts),
-		Chat: NewChatService(cfg, clnts),
+		Auth: NewAuthService(cfg, clnts, repos),
+		Chat: NewChatService(cfg, clnts, repos),
 		WS:   NewWSService(cfg, clnts),
 	}, nil
 

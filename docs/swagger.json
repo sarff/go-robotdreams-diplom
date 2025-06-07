@@ -144,6 +144,64 @@
                     }
                 }
             }
+        },
+        "/api/v1/chat/messages": {
+            "post": {
+                "security": [
+                    {
+                        "UserTokenAuth": []
+                    }
+                ],
+                "description": "Відправка повідомлення в канал/room",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "chat"
+                ],
+                "summary": "Відправити повідомлення",
+                "parameters": [
+                    {
+                        "description": "Дані для відправки повідомлення",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.MessageRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Канал і повідомлення",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "Помилка валідації або бізнес-логіки",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Неавторизований доступ",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -158,6 +216,21 @@
                     "type": "string"
                 },
                 "password": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.MessageRequest": {
+            "type": "object",
+            "required": [
+                "content",
+                "room_id"
+            ],
+            "properties": {
+                "content": {
+                    "type": "string"
+                },
+                "room_id": {
                     "type": "string"
                 }
             }

@@ -14,6 +14,17 @@ func NewChatHandler(chatService *services.ChatService) *ChatHandler {
 	return &ChatHandler{chatService: chatService}
 }
 
+// @Summary      Відправити повідомлення
+// @Description  Відправка повідомлення в канал/room
+// @Tags         chat
+// @Accept       json
+// @Produce      json
+// @Security     UserTokenAuth
+// @Param        request  body      models.MessageRequest  true  "Дані для відправки повідомлення"
+// @Success      201      {object}  models.MessageResponse  "Канал і повідомлення" // якщо є така структура
+// @Failure      400      {object}  map[string]string       "Помилка валідації або бізнес-логіки"
+// @Failure      401      {object}  map[string]string       "Неавторизований доступ"
+// @Router       /api/v1/chat/messages [post]
 func (ch *ChatHandler) SendMessage(c fiber.Ctx) error {
 	var req models.MessageRequest
 	if err := c.Bind().JSON(&req); err != nil {
@@ -32,4 +43,13 @@ func (ch *ChatHandler) SendMessage(c fiber.Ctx) error {
 	}
 
 	return c.Status(fiber.StatusCreated).JSON(message)
+}
+
+func (ch *ChatHandler) GetRooms(c fiber.Ctx) error {
+	// TODO: need implement
+	return nil
+}
+func (ch *ChatHandler) CreateRoom(c fiber.Ctx) error {
+	// TODO: need implement
+	return nil
 }

@@ -21,6 +21,7 @@ import (
 	"github.com/joho/godotenv"
 	"github.com/sarff/go-robotdreams-diplom/internal/clients"
 	"github.com/sarff/go-robotdreams-diplom/internal/config"
+	"github.com/sarff/go-robotdreams-diplom/internal/repo"
 	"github.com/sarff/go-robotdreams-diplom/internal/server"
 	"github.com/sarff/go-robotdreams-diplom/internal/services"
 	log "github.com/sarff/iSlogger"
@@ -55,8 +56,11 @@ func main() {
 		panic(err)
 	}
 
+	// DB
+	repos := repo.NewRepos(clnts.Mongo.DB)
+
 	// Services (Auth, Chat, WS):
-	srvcs, err := services.NewServices(cfg, clnts)
+	srvcs, err := services.NewServices(cfg, clnts, repos)
 
 	httpServer := server.NewServer(cfg, srvcs)
 	go func() {
@@ -64,15 +68,6 @@ func main() {
 			log.Error("Server failed to start", "Error", err)
 		}
 	}()
-	// Fiber, Handlers, Midleware:
-	//app := handlers.InitFiber(srvcs, cfg)
-	//
-	//go func() {
-	//	err := app.Listen(":8081")
-	//	if err != nil {
-	//		log.Error("server listening failed: %v", err)
-	//	}
-	//}()
 
 	log.Info("server started")
 

@@ -16,19 +16,19 @@ import (
 type AuthService struct {
 	cfg   *config.Config
 	clnts *clients.Clients
-	repo  *repo.UserRepository
+	repo  *repo.Repos
 }
 
-func NewAuthService(cfg *config.Config, clnts *clients.Clients) *AuthService {
+func NewAuthService(cfg *config.Config, clnts *clients.Clients, repos *repo.Repos) *AuthService {
 	return &AuthService{
 		cfg:   cfg,
 		clnts: clnts,
-		repo:  repo.NewUserRepository(clnts.Mongo.DB),
+		repo:  repos,
 	}
 }
 
 func (as *AuthService) Register(req *models.RegisterRequest) error {
-	existingUser, _ := as.repo.FindByEmail(req.Email)
+	existingUser, _ := as.repo.UserRepository.FindByEmail(req.Email)
 	if existingUser != nil {
 		return errors.New("user already exists")
 	}
@@ -47,7 +47,7 @@ func (as *AuthService) Register(req *models.RegisterRequest) error {
 		LastSeen: time.Now(),
 	}
 
-	if err = as.repo.Create(user); err != nil {
+	if err = as.repo.UserRepository.Create(user); err != nil {
 		return err
 	}
 
@@ -55,7 +55,7 @@ func (as *AuthService) Register(req *models.RegisterRequest) error {
 }
 
 func (as *AuthService) Login(req *models.LoginRequest) (*models.User, string, error) {
-	user, err := as.repo.FindByEmail(req.Email)
+	user, err := as.repo.UserRepository.FindByEmail(req.Email)
 	if err != nil {
 		return nil, "", errors.New("invalid credentials")
 	}
@@ -66,7 +66,7 @@ func (as *AuthService) Login(req *models.LoginRequest) (*models.User, string, er
 	}
 
 	// Update online status
-	err = as.repo.UpdateOnlineStatus(user.ID.Hex(), true)
+	err = as.repo.UserRepository.UpdateOnlineStatus(user.ID.Hex(), true)
 	if err != nil {
 		log.Error("failed to update online status", "error", err)
 	}
@@ -91,5 +91,5 @@ func (as *AuthService) LogoutAll() error {
 }
 
 func (as *AuthService) FindByID(userID string) (*models.User, error) {
-	return as.repo.FindByID(userID)
+	return as.repo.UserRepository.FindByID(userID)
 }

@@ -10,6 +10,16 @@ definitions:
     - email
     - password
     type: object
+  models.MessageRequest:
+    properties:
+      content:
+        type: string
+      room_id:
+        type: string
+    required:
+    - content
+    - room_id
+    type: object
   models.RegisterRequest:
     properties:
       email:
@@ -143,6 +153,43 @@ paths:
       summary: Реєстрація нового користувача
       tags:
       - auth
+  /api/v1/chat/messages:
+    post:
+      consumes:
+      - application/json
+      description: Відправка повідомлення в канал/room
+      parameters:
+      - description: Дані для відправки повідомлення
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/models.MessageRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Канал і повідомлення
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Помилка валідації або бізнес-логіки
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: Неавторизований доступ
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - UserTokenAuth: []
+      summary: Відправити повідомлення
+      tags:
+      - chat
 securityDefinitions:
   UserTokenAuth:
     in: header
