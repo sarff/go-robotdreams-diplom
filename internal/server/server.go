@@ -109,7 +109,7 @@ func setupAuthRoutes(api fiber.Router, handler *handlers.AuthHandler, cfg *confi
 	auth := api.Group("/auth")
 	auth.Post("/register", handler.Register)
 	auth.Post("/login", handler.Login)
-	auth.Get("/profile", middleware.AuthRequired(cfg.JWT.Secret), handler.GetProfile)
+	auth.Get("/profile", handler.GetProfile, middleware.AuthRequired(cfg.JWT.Secret))
 }
 
 func setupChatRoutes(api fiber.Router, handler *handlers.ChatHandler, cfg *config.Config) {
@@ -117,7 +117,7 @@ func setupChatRoutes(api fiber.Router, handler *handlers.ChatHandler, cfg *confi
 	// chat.Post("/rooms", handler.CreateRoom)
 	// chat.Get("/rooms", handler.GetRooms)
 	// chat.Get("/rooms/:roomID/messages", handler.GetMessages)
-	chat.Post("/messages", middleware.AuthRequired(cfg.JWT.Secret), handler.SendMessage)
+	chat.Post("/messages", handler.SendMessage, middleware.AuthRequired(cfg.JWT.Secret))
 }
 
 func setupWebSocketRoutes(api fiber.Router, handler *handlers.WebsocketHandler, cfg *config.Config) {

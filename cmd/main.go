@@ -51,7 +51,7 @@ func main() {
 	// Clients (DB,)
 	clnts, err := clients.NewClients(ctx, cfg)
 	if err != nil {
-		log.Error("Failed to create clients: %v", err)
+		log.Error("Failed to create clients", "Error", err)
 		panic(err)
 	}
 
@@ -61,7 +61,7 @@ func main() {
 	httpServer := server.NewServer(cfg, srvcs)
 	go func() {
 		if err := httpServer.Start(); err != nil {
-			log.Error("Server failed to start: %v", err)
+			log.Error("Server failed to start", "Error", err)
 		}
 	}()
 	// Fiber, Handlers, Midleware:
@@ -83,6 +83,6 @@ func main() {
 
 	log.Info("Shutting down server...")
 	if err := httpServer.Shutdown(); err != nil {
-		log.Error("Server shutdown failed: %v", err)
+		log.Error("Server shutdown failed", "Error", err)
 	}
 }

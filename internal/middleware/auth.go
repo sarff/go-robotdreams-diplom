@@ -9,7 +9,7 @@ import (
 func AuthRequired(secret string) fiber.Handler {
 	return func(c fiber.Ctx) error {
 		auth := c.Get("X-User-Token")
-		log.Debug("auth: %s", auth)
+		log.Debug("auth:", "X-User-Token", auth)
 		if auth == "" {
 			return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
 				"error": "missing auth header",
@@ -22,16 +22,16 @@ func AuthRequired(secret string) fiber.Handler {
 				"error": "invalid token",
 			})
 		}
-		log.Debug("claims: %+s", claims)
+		log.Debug("claims:", "value", claims)
 
-		sub, ok := claims["user_id"].(string)
+		userID, ok := claims["user_id"].(string)
 		if !ok {
 			return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
 				"error": "invalid token payload",
 			})
 		}
-		log.Debug("claims: %+s", sub)
-		c.Locals("userID", sub)
+		log.Debug("claims:", "userID", userID)
+		c.Locals("userID", userID)
 		return c.Next()
 	}
 }
