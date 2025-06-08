@@ -1,6 +1,8 @@
 package services
 
 import (
+	"errors"
+
 	"github.com/sarff/go-robotdreams-diplom/internal/clients"
 	"github.com/sarff/go-robotdreams-diplom/internal/config"
 	"github.com/sarff/go-robotdreams-diplom/internal/models"
@@ -24,7 +26,6 @@ func NewChatService(cfg *config.Config, clnts *clients.Clients, repos *repo.Repo
 }
 
 func (s *ChatService) SendMessage(userID string, req *models.MessageRequest) (*models.Message, error) {
-	//TODO: doesnt work
 	userObjID, err := primitive.ObjectIDFromHex(userID)
 	if err != nil {
 		return nil, err
@@ -33,6 +34,22 @@ func (s *ChatService) SendMessage(userID string, req *models.MessageRequest) (*m
 	roomObjID, err := primitive.ObjectIDFromHex(req.RoomID)
 	if err != nil {
 		return nil, err
+	}
+
+	room, err := s.repo.ChatRepository.FindRoomByID(req.RoomID)
+	if err != nil {
+		return nil, err
+	}
+
+	isMember := false
+	for _, memberID := range room.Members {
+		if memberID == userObjID {
+			isMember = true
+			break
+		}
+	}
+	if !isMember {
+		return nil, errors.New("user is not a member of this room")
 	}
 
 	message := &models.Message{
@@ -44,6 +61,9 @@ func (s *ChatService) SendMessage(userID string, req *models.MessageRequest) (*m
 	if err = s.repo.ChatRepository.CreateMessage(message); err != nil {
 		return nil, err
 	}
+
+	user, _ := s.repo.UserRepository.FindByID(userID)
+	message.User = user
 
 	return message, nil
 }
@@ -94,11 +114,18 @@ func (s *ChatService) CreateRoom(userID string, m *models.CreateRoomRequest) (*m
 }
 
 func (s *ChatService) GetUserRooms(userID string) (interface{}, error) {
-	// TODO: need implement
+	// TODO: need implement doesnt work
 	userObjID, err := primitive.ObjectIDFromHex(userID)
 	log.Debug("CreateRoom", "userObjID", userObjID)
 	if err != nil {
 		return nil, err
 	}
 	return nil, nil
+}
+
+func (s *ChatService) FindRoomByID(roomID string) (*models.Room, error) {
+	return s.repo.ChatRepository.FindRoomByID(roomID)
+}
+func (s *ChatService) FindRoomByName(roomName string) (*models.Room, error) {
+	return s.repo.ChatRepository.FindRoomByName(roomName)
 }

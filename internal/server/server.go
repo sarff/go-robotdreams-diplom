@@ -115,8 +115,10 @@ func setupAuthRoutes(api fiber.Router, handler *handlers.AuthHandler, cfg *confi
 func setupChatRoutes(api fiber.Router, handler *handlers.ChatHandler, cfg *config.Config) {
 	chat := api.Group("/chat")
 	chat.Post("/rooms", handler.CreateRoom, middleware.AuthRequired(cfg.JWT.Secret))
-	chat.Get("/rooms", handler.GetRooms, middleware.AuthRequired(cfg.JWT.Secret))
-	// chat.Get("/rooms/:roomID/messages", handler.GetMessages)
+	chat.Get("/rooms", handler.GetRooms, middleware.AuthRequired(cfg.JWT.Secret))                 // TODO:
+	chat.Get("/id/:roomID", handler.FindRoomByID, middleware.AuthRequired(cfg.JWT.Secret))        // TODO:
+	chat.Get("/rooms/:roomName", handler.FindRoomByName, middleware.AuthRequired(cfg.JWT.Secret)) // TODO:
+	// chat.Get("/rooms/:roomID/messages", handler.GetMessages) // TODO:
 	chat.Post("/messages", handler.SendMessage, middleware.AuthRequired(cfg.JWT.Secret))
 }
 

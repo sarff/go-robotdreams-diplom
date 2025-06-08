@@ -151,6 +151,61 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/v1/chat/id/{roomID}": {
+            "get": {
+                "security": [
+                    {
+                        "UserTokenAuth": []
+                    }
+                ],
+                "description": "Отримати інформацію про кімнату за її ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "chat"
+                ],
+                "summary": "Отримати кімнату по ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID кімнати",
+                        "name": "roomID",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Кімната",
+                        "schema": {
+                            "$ref": "#/definitions/models.Room"
+                        }
+                    },
+                    "401": {
+                        "description": "Неавторизований доступ",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Кімната не знайдена",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/chat/messages": {
             "post": {
                 "security": [
@@ -252,6 +307,61 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/api/v1/chat/rooms/{roomName}": {
+            "get": {
+                "security": [
+                    {
+                        "UserTokenAuth": []
+                    }
+                ],
+                "description": "Отримати інформацію про кімнату за її Name",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "chat"
+                ],
+                "summary": "Отримати кімнату по Name",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Name кімнати",
+                        "name": "roomName",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Кімната",
+                        "schema": {
+                            "$ref": "#/definitions/models.Room"
+                        }
+                    },
+                    "401": {
+                        "description": "Неавторизований доступ",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Кімната не знайдена",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -266,6 +376,7 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "members": {
+                    "description": "dive - перевірити кожен елемент масиву",
                     "type": "array",
                     "minItems": 1,
                     "items": {
@@ -290,6 +401,32 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "password": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.Message": {
+            "type": "object",
+            "properties": {
+                "content": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "room_id": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                },
+                "user": {
+                    "$ref": "#/definitions/models.User"
+                },
+                "user_id": {
                     "type": "string"
                 }
             }
@@ -328,6 +465,38 @@ const docTemplate = `{
                     "type": "string",
                     "maxLength": 20,
                     "minLength": 3
+                }
+            }
+        },
+        "models.Room": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "creator_id": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "last_message": {
+                    "$ref": "#/definitions/models.Message"
+                },
+                "members": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "name": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
                 }
             }
         },

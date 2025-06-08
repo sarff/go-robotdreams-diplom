@@ -5,6 +5,7 @@ definitions:
       description:
         type: string
       members:
+        description: dive - перевірити кожен елемент масиву
         items:
           type: string
         minItems: 1
@@ -26,6 +27,23 @@ definitions:
     required:
     - email
     - password
+    type: object
+  models.Message:
+    properties:
+      content:
+        type: string
+      created_at:
+        type: string
+      id:
+        type: string
+      room_id:
+        type: string
+      updated_at:
+        type: string
+      user:
+        $ref: '#/definitions/models.User'
+      user_id:
+        type: string
     type: object
   models.MessageRequest:
     properties:
@@ -52,6 +70,27 @@ definitions:
     - email
     - password
     - username
+    type: object
+  models.Room:
+    properties:
+      created_at:
+        type: string
+      creator_id:
+        type: string
+      description:
+        type: string
+      id:
+        type: string
+      last_message:
+        $ref: '#/definitions/models.Message'
+      members:
+        items:
+          type: string
+        type: array
+      name:
+        type: string
+      updated_at:
+        type: string
     type: object
   models.User:
     properties:
@@ -170,6 +209,41 @@ paths:
       summary: Реєстрація нового користувача
       tags:
       - auth
+  /api/v1/chat/id/{roomID}:
+    get:
+      consumes:
+      - application/json
+      description: Отримати інформацію про кімнату за її ID
+      parameters:
+      - description: ID кімнати
+        in: path
+        name: roomID
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Кімната
+          schema:
+            $ref: '#/definitions/models.Room'
+        "401":
+          description: Неавторизований доступ
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Кімната не знайдена
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - UserTokenAuth: []
+      summary: Отримати кімнату по ID
+      tags:
+      - chat
   /api/v1/chat/messages:
     post:
       consumes:
@@ -232,6 +306,41 @@ paths:
       security:
       - UserTokenAuth: []
       summary: Створення кімнати
+      tags:
+      - chat
+  /api/v1/chat/rooms/{roomName}:
+    get:
+      consumes:
+      - application/json
+      description: Отримати інформацію про кімнату за її Name
+      parameters:
+      - description: Name кімнати
+        in: path
+        name: roomName
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Кімната
+          schema:
+            $ref: '#/definitions/models.Room'
+        "401":
+          description: Неавторизований доступ
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Кімната не знайдена
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - UserTokenAuth: []
+      summary: Отримати кімнату по Name
       tags:
       - chat
 securityDefinitions:

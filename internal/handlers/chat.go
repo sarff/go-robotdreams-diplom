@@ -93,3 +93,45 @@ func (ch *ChatHandler) CreateRoom(c fiber.Ctx) error {
 
 	return c.Status(fiber.StatusCreated).JSON(room)
 }
+
+// @Summary      Отримати кімнату по ID
+// @Description  Отримати інформацію про кімнату за її ID
+// @Tags         chat
+// @Accept       json
+// @Produce      json
+// @Security     UserTokenAuth
+// @Param        roomID  path      string  true  "ID кімнати"
+// @Success      200  {object}  models.Room              "Кімната"
+// @Failure      401  {object}  map[string]string        "Неавторизований доступ"
+// @Failure      404  {object}  map[string]string        "Кімната не знайдена"
+// @Router       /api/v1/chat/id/{roomID} [get]
+func (ch *ChatHandler) FindRoomByID(c fiber.Ctx) error {
+	roomIDParam := c.Params("roomID")
+
+	room, err := ch.chatService.FindRoomByID(roomIDParam)
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{})
+	}
+	return c.Status(fiber.StatusOK).JSON(room)
+}
+
+// @Summary      Отримати кімнату по Name
+// @Description  Отримати інформацію про кімнату за її Name
+// @Tags         chat
+// @Accept       json
+// @Produce      json
+// @Security     UserTokenAuth
+// @Param        roomName  path      string  true  "Name кімнати"
+// @Success      200  {object}  models.Room              "Кімната"
+// @Failure      401  {object}  map[string]string        "Неавторизований доступ"
+// @Failure      404  {object}  map[string]string        "Кімната не знайдена"
+// @Router       /api/v1/chat/rooms/{roomName} [get]
+func (ch *ChatHandler) FindRoomByName(c fiber.Ctx) error {
+	roomNameParam := c.Params("roomName")
+
+	room, err := ch.chatService.FindRoomByName(roomNameParam)
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{})
+	}
+	return c.Status(fiber.StatusOK).JSON(room)
+}

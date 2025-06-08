@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/sarff/go-robotdreams-diplom/internal/models"
+	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 )
@@ -49,4 +50,35 @@ func (r *ChatRepository) CreateRoom(room *models.Room) error {
 
 	room.ID = result.InsertedID.(primitive.ObjectID)
 	return nil
+}
+
+func (r *ChatRepository) FindRoomByID(roomID string) (*models.Room, error) {
+	roomObjectID, err := primitive.ObjectIDFromHex(roomID)
+	if err != nil {
+		return nil, err
+	}
+
+	var room models.Room
+	err = r.collection.FindOne(context.Background(), bson.M{"_id": roomObjectID}).Decode(&room)
+	if err != nil {
+		if errors.Is(err, mongo.ErrNoDocuments) {
+			return nil, errors.New("room not found")
+		}
+		return nil, err
+	}
+
+	return &room, nil
+}
+
+func (r *ChatRepository) FindRoomByName(roomName string) (*models.Room, error) {
+	var room models.Room
+	err := r.collection.FindOne(context.Background(), bson.M{"name": roomName}).Decode(&room)
+	if err != nil {
+		if errors.Is(err, mongo.ErrNoDocuments) {
+			return nil, errors.New("room not found")
+		}
+		return nil, err
+	}
+
+	return &room, nil
 }
