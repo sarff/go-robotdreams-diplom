@@ -123,6 +123,5 @@ func setupChatRoutes(api fiber.Router, handler *handlers.ChatHandler, cfg *confi
 }
 
 func setupWebSocketRoutes(api fiber.Router, handler *handlers.WebsocketHandler, cfg *config.Config) {
-	// TODO:
-	api.Get("/ws", handler.HandleWebSocket, middleware.WSAuthRequired())
+	api.Get("/ws", handler.HandleWebSocket, middleware.AuthRequired(cfg.JWT.Secret))
 }

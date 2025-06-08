@@ -34,8 +34,3 @@ func AuthRequired(secret string) fiber.Handler {
 		return c.Next()
 	}
 }
-
-func WSAuthRequired() fiber.Handler {
-	// TODO:
-	return nil
-}
