@@ -6,13 +6,18 @@ services:
     ports:
       - "80:8081"
     restart: unless-stopped
+    networks:
+      - mynet
     env_file:
       - .env
+    depends_on:
+      - mongodb
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://localhost:8081/health" ]
       interval: 30s
       timeout: 3s
       start_period: 5s
+      retries: 3
     volumes:
       - ./.env:/app/.env
       - ./logs:/app/logs

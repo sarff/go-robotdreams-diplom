@@ -19,5 +19,6 @@ func NewWSHandler(ws *services.WSService, ch *services.ChatService) *WebsocketHa
 
 func (ch *WebsocketHandler) HandleWebSocket(c fiber.Ctx) error {
 	// TODO:
+	_ = c.Locals("userID").(string)
 	return nil
 }

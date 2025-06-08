@@ -16,7 +16,7 @@ type Config struct {
 	}
 
 	Database struct {
-		URI  string `env:"MONGO_URI" envDefault:"mongodb://localhost:27017"`
+		URI  string `env:"MONGO_URI" envDefault:"mongodb://127.0.0.1:27017"`
 		Name string `env:"DATABASE_NAME" envDefault:"test"`
 	}
 
