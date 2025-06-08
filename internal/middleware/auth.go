@@ -9,7 +9,6 @@ import (
 func AuthRequired(secret string) fiber.Handler {
 	return func(c fiber.Ctx) error {
 		auth := c.Get("X-User-Token")
-		log.Debug("auth:", "X-User-Token", auth)
 		if auth == "" {
 			return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
 				"error": "missing auth header",

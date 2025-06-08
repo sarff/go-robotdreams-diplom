@@ -36,7 +36,7 @@ func (s *ChatService) SendMessage(userID string, req *models.MessageRequest) (*m
 		return nil, err
 	}
 
-	room, err := s.repo.ChatRepository.FindRoomByID(req.RoomID)
+	room, err := s.repo.RoomRepository.FindRoomByID(req.RoomID)
 	if err != nil {
 		return nil, err
 	}
@@ -124,8 +124,8 @@ func (s *ChatService) GetUserRooms(userID string) (interface{}, error) {
 }
 
 func (s *ChatService) FindRoomByID(roomID string) (*models.Room, error) {
-	return s.repo.ChatRepository.FindRoomByID(roomID)
+	return s.repo.RoomRepository.FindRoomByID(roomID)
 }
 func (s *ChatService) FindRoomByName(roomName string) (*models.Room, error) {
-	return s.repo.ChatRepository.FindRoomByName(roomName)
+	return s.repo.RoomRepository.FindRoomByName(roomName)
 }
