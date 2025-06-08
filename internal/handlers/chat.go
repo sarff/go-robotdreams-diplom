@@ -21,7 +21,6 @@ func NewChatHandler(chatService *services.ChatService) *ChatHandler {
 // @Produce      json
 // @Security     UserTokenAuth
 // @Param        request  body      models.MessageRequest  true  "Дані для відправки повідомлення"
-// @Success      201      {object}  models.MessageResponse  "Канал і повідомлення" // якщо є така структура
 // @Failure      400      {object}  map[string]string       "Помилка валідації або бізнес-логіки"
 // @Failure      401      {object}  map[string]string       "Неавторизований доступ"
 // @Router       /api/v1/chat/messages [post]
@@ -45,12 +44,52 @@ func (ch *ChatHandler) SendMessage(c fiber.Ctx) error {
 	return c.Status(fiber.StatusCreated).JSON(message)
 }
 
+// TODO: tegs
 func (ch *ChatHandler) GetRooms(c fiber.Ctx) error {
-	// TODO: need implement
-	return nil
+	userID := c.Locals("userID").(string)
+
+	room, err := ch.chatService.GetUserRooms(userID)
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": "Cannot receive rooms for user",
+		})
+	}
+
+	return c.Status(fiber.StatusCreated).JSON(room)
 }
 
+// @Summary      Створення кімнати
+// @Description Створення кімнати для спілкування
+// @Tags         chat
+// @Accept       json
+// @Produce      json
+// @Security     UserTokenAuth
+// @Param        request  body      models.CreateRoomRequest  true  "Дані для створення"
+// @Failure      400      {object}  map[string]string       "Помилка валідації або бізнес-логіки"
+// @Failure      401      {object}  map[string]string       "Неавторизований доступ"
+// @Router       /api/v1/chat/rooms [post]
 func (ch *ChatHandler) CreateRoom(c fiber.Ctx) error {
-	// TODO: need implement
-	return nil
+	var req models.CreateRoomRequest
+	if err := c.Bind().JSON(&req); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": "Invalid request body",
+		})
+	}
+	// Validate check
+	if err := validate.Struct(req); err != nil {
+		return c.Status(fiber.StatusUnprocessableEntity).JSON(fiber.Map{
+			"error": err.Error(),
+		})
+	}
+
+	userID := c.Locals("userID").(string)
+
+	room, err := ch.chatService.CreateRoom(userID, &req)
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": err.Error(),
+		})
+	}
+
+	return c.Status(fiber.StatusCreated).JSON(room)
 }

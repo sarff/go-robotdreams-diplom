@@ -6,9 +6,11 @@ import (
 	"time"
 
 	"github.com/sarff/go-robotdreams-diplom/internal/models"
+	log "github.com/sarff/iSlogger"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 type UserRepository struct {
@@ -16,8 +18,19 @@ type UserRepository struct {
 }
 
 func NewUserRepository(db *mongo.Database) *UserRepository {
+	collection := db.Collection("room")
+
+	indexName := mongo.IndexModel{
+		Keys:    bson.D{{Key: "name", Value: 1}},
+		Options: options.Index().SetUnique(true),
+	}
+
+	if _, err := collection.Indexes().CreateOne(context.Background(), indexName); err != nil {
+		log.Warn("Failed to create index: ", "indexName", err)
+	}
+
 	return &UserRepository{
-		collection: db.Collection("users"),
+		collection: collection,
 	}
 }
 

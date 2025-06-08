@@ -1,5 +1,22 @@
 basePath: /
 definitions:
+  models.CreateRoomRequest:
+    properties:
+      description:
+        type: string
+      members:
+        items:
+          type: string
+        minItems: 1
+        type: array
+      name:
+        maxLength: 50
+        minLength: 3
+        type: string
+    required:
+    - members
+    - name
+    type: object
   models.LoginRequest:
     properties:
       email:
@@ -168,11 +185,6 @@ paths:
       produces:
       - application/json
       responses:
-        "201":
-          description: Канал і повідомлення
-          schema:
-            additionalProperties: true
-            type: object
         "400":
           description: Помилка валідації або бізнес-логіки
           schema:
@@ -188,6 +200,38 @@ paths:
       security:
       - UserTokenAuth: []
       summary: Відправити повідомлення
+      tags:
+      - chat
+  /api/v1/chat/rooms:
+    post:
+      consumes:
+      - application/json
+      description: Створення кімнати для спілкування
+      parameters:
+      - description: Дані для створення
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/models.CreateRoomRequest'
+      produces:
+      - application/json
+      responses:
+        "400":
+          description: Помилка валідації або бізнес-логіки
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: Неавторизований доступ
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - UserTokenAuth: []
+      summary: Створення кімнати
       tags:
       - chat
 securityDefinitions:
