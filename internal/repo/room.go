@@ -7,9 +7,11 @@ import (
 	"time"
 
 	"github.com/sarff/go-robotdreams-diplom/internal/models"
+	log "github.com/sarff/iSlogger"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 type RoomRepository struct {
@@ -17,12 +19,23 @@ type RoomRepository struct {
 }
 
 func NewRoomRepository(db *mongo.Database) *RoomRepository {
+	collection := db.Collection("room")
+
+	indexName := mongo.IndexModel{
+		Keys:    bson.D{{Key: "name", Value: 1}},
+		Options: options.Index().SetUnique(true),
+	}
+
+	if _, err := collection.Indexes().CreateOne(context.Background(), indexName); err != nil {
+		log.Warn("Failed to create index: ", "indexName", err)
+	}
+
 	return &RoomRepository{
-		collection: db.Collection("room"),
+		collection: collection,
 	}
 }
 
-func (r *ChatRepository) CreateRoom(room *models.Room) error {
+func (r *RoomRepository) CreateRoom(room *models.Room) error {
 	room.CreatedAt = time.Now().UTC()
 	room.UpdatedAt = time.Now().UTC()
 
@@ -68,4 +81,32 @@ func (r *RoomRepository) FindRoomByName(roomName string) (*models.Room, error) {
 	}
 
 	return &room, nil
+}
+
+func (r *RoomRepository) FindByUserID(userId string) ([]*models.Room, error) {
+	ctx := context.Background()
+	userObjID, err := primitive.ObjectIDFromHex(userId)
+	if err != nil {
+		return nil, err
+	}
+	cursor, err := r.collection.Find(ctx, bson.M{"members": userObjID})
+	if err != nil {
+		return nil, err
+	}
+	defer cursor.Close(ctx)
+
+	var rooms []*models.Room
+	for cursor.Next(ctx) {
+		var room models.Room
+		if err := cursor.Decode(&room); err != nil {
+			return nil, err
+		}
+		rooms = append(rooms, &room)
+	}
+
+	if err := cursor.Err(); err != nil {
+		return nil, err
+	}
+
+	return rooms, nil
 }

@@ -44,7 +44,16 @@ func (ch *ChatHandler) SendMessage(c fiber.Ctx) error {
 	return c.Status(fiber.StatusCreated).JSON(message)
 }
 
-// TODO: tegs
+// @Summary      Отримати всі кімнати користувача
+// @Description  Повертає список кімнат, в яких присутній авторизований користувач
+// @Tags         chat
+// @Accept       json
+// @Produce      json
+// @Security     UserTokenAuth
+// @Success      200  {array}   models.Room           "Список кімнат"
+// @Failure      400  {object}  map[string]string      "Не вдалося отримати кімнати"
+// @Failure      401  {object}  map[string]string      "Неавторизований доступ"
+// @Router       /api/v1/chat/rooms [get]
 func (ch *ChatHandler) GetRooms(c fiber.Ctx) error {
 	userID := c.Locals("userID").(string)
 
@@ -134,4 +143,9 @@ func (ch *ChatHandler) FindRoomByName(c fiber.Ctx) error {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{})
 	}
 	return c.Status(fiber.StatusOK).JSON(room)
+}
+
+func (ch *ChatHandler) GetMessages(ctx fiber.Ctx) error {
+	//	TODO
+	return nil
 }

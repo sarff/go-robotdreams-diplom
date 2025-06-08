@@ -83,9 +83,9 @@ func (s *ChatService) CreateRoom(userID string, m *models.CreateRoomRequest) (*m
 	//	"000000000000000000000000",
 	//	"6844634bdcd820032ab52b09"
 	//	],
-	for _, memberID := range m.Members {
-		log.Debug("CreateRoom", "memberID", memberID)
-		usr, err := s.repo.UserRepository.FindByEmail(memberID)
+	for _, memberEmail := range m.Members {
+		log.Debug("CreateRoom", "memberEmail", memberEmail)
+		usr, err := s.repo.UserRepository.FindByEmail(memberEmail)
 		if err != nil {
 			log.Error("CreateRoom", "FindByEmail", err)
 			continue
@@ -95,6 +95,7 @@ func (s *ChatService) CreateRoom(userID string, m *models.CreateRoomRequest) (*m
 			owner = true
 		}
 		memberIDs = append(memberIDs, usr.ID)
+		log.Debug("CreateRoom", "memberIDs", memberIDs)
 	}
 
 	if !owner {
@@ -107,20 +108,14 @@ func (s *ChatService) CreateRoom(userID string, m *models.CreateRoomRequest) (*m
 		CreatorID:   userObjID,
 		Members:     memberIDs,
 	}
-	if err = s.repo.ChatRepository.CreateRoom(room); err != nil {
+	if err = s.repo.RoomRepository.CreateRoom(room); err != nil {
 		return nil, err
 	}
 	return room, nil
 }
 
-func (s *ChatService) GetUserRooms(userID string) (interface{}, error) {
-	// TODO: need implement doesnt work
-	userObjID, err := primitive.ObjectIDFromHex(userID)
-	log.Debug("CreateRoom", "userObjID", userObjID)
-	if err != nil {
-		return nil, err
-	}
-	return nil, nil
+func (s *ChatService) GetUserRooms(userID string) ([]*models.Room, error) {
+	return s.repo.RoomRepository.FindByUserID(userID)
 }
 
 func (s *ChatService) FindRoomByID(roomID string) (*models.Room, error) {

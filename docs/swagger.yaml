@@ -277,6 +277,36 @@ paths:
       tags:
       - chat
   /api/v1/chat/rooms:
+    get:
+      consumes:
+      - application/json
+      description: Повертає список кімнат, в яких присутній авторизований користувач
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Список кімнат
+          schema:
+            items:
+              $ref: '#/definitions/models.Room'
+            type: array
+        "400":
+          description: Не вдалося отримати кімнати
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: Неавторизований доступ
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - UserTokenAuth: []
+      summary: Отримати всі кімнати користувача
+      tags:
+      - chat
     post:
       consumes:
       - application/json

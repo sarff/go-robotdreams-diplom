@@ -258,6 +258,53 @@ const docTemplate = `{
             }
         },
         "/api/v1/chat/rooms": {
+            "get": {
+                "security": [
+                    {
+                        "UserTokenAuth": []
+                    }
+                ],
+                "description": "Повертає список кімнат, в яких присутній авторизований користувач",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "chat"
+                ],
+                "summary": "Отримати всі кімнати користувача",
+                "responses": {
+                    "200": {
+                        "description": "Список кімнат",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.Room"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Не вдалося отримати кімнати",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Неавторизований доступ",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            },
             "post": {
                 "security": [
                     {
