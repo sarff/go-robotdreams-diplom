@@ -4,6 +4,7 @@ import (
 	"github.com/gofiber/fiber/v3"
 	"github.com/sarff/go-robotdreams-diplom/internal/models"
 	"github.com/sarff/go-robotdreams-diplom/internal/services"
+	log "github.com/sarff/iSlogger"
 )
 
 type ChatHandler struct {
@@ -145,7 +146,29 @@ func (ch *ChatHandler) FindRoomByName(c fiber.Ctx) error {
 	return c.Status(fiber.StatusOK).JSON(room)
 }
 
-func (ch *ChatHandler) GetMessages(ctx fiber.Ctx) error {
-	//	TODO
-	return nil
+// @Summary      Отримати останні повідомлення
+// @Description  Повертає останні N повідомлень у кімнаті за roomID
+// @Tags         chat
+// @Accept       json
+// @Produce      json
+// @Security     UserTokenAuth
+// @Param        roomID   path     string  true  "ID кімнати"
+// @Param        limit    query    string     false "Кількість повідомлень (за замовчуванням 20)"
+// @Success      200      {array}  models.Message          "Список повідомлень"
+// @Failure      400      {object} map[string]string       "Некоректний запит"
+// @Failure      401      {object} map[string]string       "Неавторизований доступ"
+// @Router       /api/v1/chat/rooms/{roomID}/messages [get]
+func (ch *ChatHandler) GetMessages(c fiber.Ctx) error {
+	roomID := c.Params("roomID")
+	limit := c.Query("limit", "25")
+	log.Debug("GetMessages", "roomID", roomID, "limit", limit)
+	messages, err := ch.chatService.GetRoomMesages(roomID, limit)
+	log.Debug("GetMessages", "roomID", roomID, "limit", limit, "messages", messages)
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": "Failed to fetch messages",
+		})
+	}
+
+	return c.Status(fiber.StatusOK).JSON(messages)
 }

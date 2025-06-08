@@ -124,3 +124,7 @@ func (s *ChatService) FindRoomByID(roomID string) (*models.Room, error) {
 func (s *ChatService) FindRoomByName(roomName string) (*models.Room, error) {
 	return s.repo.RoomRepository.FindRoomByName(roomName)
 }
+
+func (s *ChatService) GetRoomMesages(id string, limit string) (*[]models.Message, error) {
+	return s.repo.ChatRepository.GetRoomMesages(id, limit)
+}

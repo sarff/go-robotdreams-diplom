@@ -338,6 +338,47 @@ paths:
       summary: Створення кімнати
       tags:
       - chat
+  /api/v1/chat/rooms/{roomID}/messages:
+    get:
+      consumes:
+      - application/json
+      description: Повертає останні N повідомлень у кімнаті за roomID
+      parameters:
+      - description: ID кімнати
+        in: path
+        name: roomID
+        required: true
+        type: string
+      - description: Кількість повідомлень (за замовчуванням 20)
+        in: query
+        name: limit
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Список повідомлень
+          schema:
+            items:
+              $ref: '#/definitions/models.Message'
+            type: array
+        "400":
+          description: Некоректний запит
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: Неавторизований доступ
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - UserTokenAuth: []
+      summary: Отримати останні повідомлення
+      tags:
+      - chat
   /api/v1/chat/rooms/{roomName}:
     get:
       consumes:

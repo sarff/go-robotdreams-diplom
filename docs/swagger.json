@@ -349,6 +349,70 @@
                 }
             }
         },
+        "/api/v1/chat/rooms/{roomID}/messages": {
+            "get": {
+                "security": [
+                    {
+                        "UserTokenAuth": []
+                    }
+                ],
+                "description": "Повертає останні N повідомлень у кімнаті за roomID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "chat"
+                ],
+                "summary": "Отримати останні повідомлення",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID кімнати",
+                        "name": "roomID",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Кількість повідомлень (за замовчуванням 20)",
+                        "name": "limit",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Список повідомлень",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.Message"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Некоректний запит",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Неавторизований доступ",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/chat/rooms/{roomName}": {
             "get": {
                 "security": [
