@@ -98,7 +98,7 @@ func setupRoutes(app *fiber.App, services *services.Services, cfg *config.Config
 
 	authHandler := handlers.NewAuthHandler(services.Auth)
 	chatHandler := handlers.NewChatHandler(services.Chat)
-	wsHandler := handlers.NewWSHandler(services.WS)
+	wsHandler := handlers.NewWSHandler(services.WS, services.Chat)
 
 	setupAuthRoutes(api, authHandler, cfg)
 	setupChatRoutes(api, chatHandler, cfg)
@@ -124,5 +124,5 @@ func setupChatRoutes(api fiber.Router, handler *handlers.ChatHandler, cfg *confi
 
 func setupWebSocketRoutes(api fiber.Router, handler *handlers.WebsocketHandler, cfg *config.Config) {
 	// TODO:
-	// api.Get("/ws", middleware.WSAuthRequired(), handler.HandleWebSocket)
+	api.Get("/ws", handler.HandleWebSocket, middleware.WSAuthRequired())
 }

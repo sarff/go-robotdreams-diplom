@@ -1,11 +1,23 @@
 package handlers
 
-import "github.com/sarff/go-robotdreams-diplom/internal/services"
+import (
+	"github.com/gofiber/fiber/v3"
+	"github.com/sarff/go-robotdreams-diplom/internal/services"
+)
 
 type WebsocketHandler struct {
-	wsService *services.WSService
+	ws *services.WSService
+	ch *services.ChatService
 }
 
-func NewWSHandler(wsService *services.WSService) *WebsocketHandler {
-	return &WebsocketHandler{wsService: wsService}
+func NewWSHandler(ws *services.WSService, ch *services.ChatService) *WebsocketHandler {
+	return &WebsocketHandler{
+		ws: ws,
+		ch: ch,
+	}
+}
+
+func (ch *WebsocketHandler) HandleWebSocket(c fiber.Ctx) error {
+	// TODO:
+	return nil
 }
