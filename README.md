@@ -2,16 +2,16 @@
 
 
 # Оновити документацію Swagger
-```swag init -g cmd/main.go </br>```
+```swag init -g cmd/main.go```
 
 
 # Вирішення проблеми fiber v3 та підтримки swagger (підтримується тільки 2 версія swagger)
 ```
-"github.com/gofiber/fiber/v3" </br>
-"github.com/gofiber/fiber/v3/middleware/adaptor"  </br>
-"github.com/gofiber/fiber/v3/middleware/cors"  </br>
-"github.com/gofiber/fiber/v3/middleware/static"  </br>
-httpSwagger "github.com/swaggo/http-swagger/v2"  </br>
+"github.com/gofiber/fiber/v3" 
+"github.com/gofiber/fiber/v3/middleware/adaptor" 
+"github.com/gofiber/fiber/v3/middleware/cors"  
+"github.com/gofiber/fiber/v3/middleware/static"  
+httpSwagger "github.com/swaggo/http-swagger/v2"  
 ```
 ** **httpSwagger "github.com/swaggo/http-swagger/v2" </br>**
 
